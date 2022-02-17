@@ -1,9 +1,9 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>所有文章 - Visonhuo Space</title>
-        <link>https://visonhuo.github.io/posts/</link>
-        <description>所有文章 | Visonhuo Space</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 13 Feb 2022 09:59:57 &#43;0800</lastBuildDate><atom:link href="https://visonhuo.github.io/posts/" rel="self" type="application/rss+xml" /><item>
+        <title>Others - 分类 - Visonhuo Space</title>
+        <link>https://visonhuo.github.io/categories/others/</link>
+        <description>Others - 分类 - Visonhuo Space</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 13 Feb 2022 09:59:57 &#43;0800</lastBuildDate><atom:link href="https://visonhuo.github.io/categories/others/" rel="self" type="application/rss+xml" /><item>
     <title>第一篇博客（2022）</title>
     <link>https://visonhuo.github.io/posts/first_post/</link>
     <pubDate>Sun, 13 Feb 2022 09:59:57 &#43;0800</pubDate>

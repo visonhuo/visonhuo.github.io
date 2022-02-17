@@ -2,7 +2,7 @@
     <channel>
         <title>Visonhuo Space</title>
         <link>https://visonhuo.github.io/</link>
-        <description>Visonhuo Space</description>
+        <description>Vison 的全新 Hugo 网站</description>
         <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 13 Feb 2022 09:59:57 &#43;0800</lastBuildDate>
             <atom:link href="https://visonhuo.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
@@ -11,6 +11,8 @@
     <pubDate>Sun, 13 Feb 2022 09:59:57 &#43;0800</pubDate>
     <author>作者</author>
     <guid>https://visonhuo.github.io/posts/first_post/</guid>
-    <description><![CDATA[前言 这是博客项目的第一篇文章，想记录一下个人对博客的看法，分为以下几个部分： 为什么写博客？ 为什么不写博客？ 写什么博客？ 2022年的目标 讨论 为]]></description>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/feature/first_post_bg.jpeg" referrerpolicy="no-referrer">
+            </div>记录一下个人对博客的一些观点]]></description>
 </item></channel>
 </rss>
