@@ -5,8 +5,8 @@ lastmod: {{ .Date }}
 draft: true
 author: visonhuo
 description: ""
-featuredImage: ""
-featuredImagePreview: ""
+featuredImage: "/images/feature/"
+featuredImagePreview: "/images/feature/"
 categories: [""]
 tags: [""]
 ---

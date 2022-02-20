@@ -8,7 +8,7 @@ description: "该文章将会探索 goto 关键字，并讨论为何它不推荐
 featuredImage: "/images/feature/program_language/why_we_need_goto_keyword_bg.png"
 featuredImagePreview: "/images/feature/program_language/why_we_need_goto_keyword_bg.png"
 categories: ["程序设计"]
-tags: ["程序设计", "编程语言"]
+tags: ["编程语言", "代码规范"]
 ---
 <!--more-->
 ## 前言

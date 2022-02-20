@@ -3,11 +3,11 @@ title: "第一篇博客（2022）"
 date: 2022-02-13T09:59:57+08:00
 draft: false
 author: visonhuo
-description: "记录一下个人对博客的一些观点"
-featuredImage: "/images/feature/first_post_bg.jpeg"
-featuredImagePreview: "/images/feature/first_post_bg.jpeg"
+description: "作为个人空间的第一篇文章，记录一些自己对博客的想法。"
+featuredImage: "/images/feature/summary/first_post_bg.jpeg"
+featuredImagePreview: "/images/feature/summary/first_post_bg.jpeg"
 categories: ["Others"]
-tags: ["Others", "个人心得"]
+tags: ["个人心得","技术无瓜"]
 ---
 <!--more-->
 
