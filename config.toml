@@ -112,10 +112,44 @@ enableEmoji = true
             # LoveIt 删除 | 0.2.0 被 params.page 中的 hiddenFromHomePage 替代
             # 当你没有在文章前置参数中设置 "hiddenFromHomePage" 时的默认行为
             defaultHiddenFromHomePage = false
+    # LoveIt 更改 | 0.2.0 文章页面配置
+    [params.page]
+        # LoveIt 新增 | 0.2.0 是否在主页隐藏一篇文章
+        hiddenFromHomePage = false
+        # LoveIt 新增 | 0.2.0 是否在搜索结果中隐藏一篇文章
+        hiddenFromSearch = false
+        # LoveIt 新增 | 0.2.0 是否使用 twemoji
+        twemoji = false
+        # 是否使用 lightgallery
+        lightgallery = false
+        # LoveIt 新增 | 0.2.0 是否使用 ruby 扩展语法
+        ruby = true
+        # LoveIt 新增 | 0.2.0 是否使用 fraction 扩展语法
+        fraction = true
+        # LoveIt 新增 | 0.2.0 是否使用 fontawesome 扩展语法
+        fontawesome = true
+        # 是否在文章页面显示原始 Markdown 文档链接
+        linkToMarkdown = true
+        # LoveIt 新增 | 0.2.4 是否在 RSS 中显示全文内容
+        rssFullText = false
+        # LoveIt 新增 | 0.2.0 目录配置
+        [params.page.toc]
+            # 是否使用目录
+            enable = true
+        # LoveIt 新增 | 0.2.0 代码配置
+        [params.page.code]
+            # 是否显示代码块的复制按钮
+            copy = true
+            # 默认展开显示的代码行数
+            maxShownLines = 20
 
 # Hugo 解析文档的配置
 [markup]
   # 语法高亮设置 (https://gohugo.io/content-management/syntax-highlighting)
   [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    lineNumbersInTable = true
     # false 是必要的设置 (https://github.com/dillonzq/LoveIt/issues/158)
     noClasses = false
