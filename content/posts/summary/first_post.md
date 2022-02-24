@@ -7,7 +7,7 @@ description: "作为个人空间的第一篇文章，记录一些自己对博客
 featuredImage: "/images/feature/summary/first_post_bg.jpeg"
 featuredImagePreview: "/images/feature/summary/first_post_bg.jpeg"
 categories: ["Others"]
-tags: ["个人心得","技术无瓜"]
+tags: ["总结心得","技术无瓜"]
 ---
 <!--more-->
 

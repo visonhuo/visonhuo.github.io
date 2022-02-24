@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>微服务架构中的消息通信模式 - Vison Space</title><meta name="Description" content="文章将讨论在微服务架构中进程间通信的交互模式，并基于消息队列介绍这些交互模式的工作过程、应用场景。"><meta property="og:title" content="微服务架构中的消息通信模式" />
+<meta property="og:description" content="文章将讨论在微服务架构中进程间通信的交互模式，并基于消息队列介绍这些交互模式的工作过程、应用场景。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://visonhuo.github.io/posts/architecture_design/message_pattern/" /><meta property="og:image" content="https://visonhuo.github.io/images/logo.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-20T15:50:53+08:00" />
+<meta property="article:modified_time" content="2022-02-20T15:50:53+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://visonhuo.github.io/images/logo.png"/>
+
+<meta name="twitter:title" content="微服务架构中的消息通信模式"/>
+<meta name="twitter:description" content="文章将讨论在微服务架构中进程间通信的交互模式，并基于消息队列介绍这些交互模式的工作过程、应用场景。"/>
+<meta name="application-name" content="Vison Space">
+<meta name="apple-mobile-web-app-title" content="Vison Space"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="images/logo.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="https://visonhuo.github.io/posts/architecture_design/message_pattern/" /><link rel="prev" href="https://visonhuo.github.io/posts/program_design/why_we_need_goto_keyword/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "微服务架构中的消息通信模式",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/visonhuo.github.io\/posts\/architecture_design\/message_pattern\/"
+        },"genre": "posts","keywords": "微服务, 进程间通信, 消息队列","wordcount":  4006 ,
+        "url": "https:\/\/visonhuo.github.io\/posts\/architecture_design\/message_pattern\/","datePublished": "2022-02-20T15:50:53+08:00","dateModified": "2022-02-20T15:50:53+08:00","publisher": {
+            "@type": "Organization",
+            "name": "visonhuo"},"author": {
+                "@type": "Person",
+                "name": "visonhuo"
+            },"description": "文章将讨论在微服务架构中进程间通信的交互模式，并基于消息队列介绍这些交互模式的工作过程、应用场景。"
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('dark' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'dark' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Vison Space">Vison Space</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about"> 关于 </a><a class="menu-item" href="https://hugoloveit.com/zh-cn/posts/" rel="noopener noreffer" target="_blank"> 文档 </a><a class="menu-item" href="https://github.com/visonhuo" rel="noopener noreffer" target="_blank"><i class="fab fa-github fa-fw"></i>  </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Vison Space">Vison Space</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about" title="">关于</a><a class="menu-item" href="https://hugoloveit.com/zh-cn/posts/" title="" rel="noopener noreffer" target="_blank">文档</a><a class="menu-item" href="https://github.com/visonhuo" title="" rel="noopener noreffer" target="_blank"><i class="fab fa-github fa-fw"></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">微服务架构中的消息通信模式</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw"></i>visonhuo</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"><i class="far fa-folder fa-fw"></i>架构设计</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2022-02-20">2022-02-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4006 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/images/feature/architecture_design/message_pattern_bg.png"
+        data-srcset="/images/feature/architecture_design/message_pattern_bg.png, /images/feature/architecture_design/message_pattern_bg.png 1.5x, /images/feature/architecture_design/message_pattern_bg.png 2x"
+        data-sizes="auto"
+        alt="/images/feature/architecture_design/message_pattern_bg.png"
+        title="文章将讨论在微服务架构中进程间通信的交互模式，并基于消息队列介绍这些交互模式的工作过程、应用场景。" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#进程间通信的交互模式">进程间通信的交互模式</a></li>
+    <li><a href="#五种消息交互模式">五种消息交互模式</a>
+      <ul>
+        <li><a href="#同步请求响应">同步请求/响应</a></li>
+        <li><a href="#异步请求响应">异步请求/响应</a></li>
+        <li><a href="#单向通知">单向通知</a></li>
+        <li><a href="#发布订阅">发布/订阅</a></li>
+        <li><a href="#同步请求多响应">同步请求/多响应</a></li>
+      </ul>
+    </li>
+    <li><a href="#命令消息-or-事件消息">命令消息 or 事件消息</a></li>
+    <li><a href="#小结">小结</a></li>
+    <li><a href="#reference">Reference</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="前言">前言</h2>
+<p>在微服务架构中，RPC、消息队列是我们常用的进程间通信的手段。
+也正是由于这两种方式过于普及，导致我们很容易忽略其他进程间通信的交互模式。</p>
+<p>在这篇文章中，我们将会介绍进程间通信在微服务架构中的几种交互模式，
+并基于消息队列来讲述几种交互模式的工作过程及其应用场景。
+将会讨论如下内容：</p>
+<ul>
+<li><i class="far fa-check-square fa-fw"></i> 进程间通信的交互模式</li>
+<li><i class="far fa-check-square fa-fw"></i> 五种消息交互模式</li>
+<li><i class="far fa-check-square fa-fw"></i> 命令消息 or 事件消息</li>
+</ul>
+<h2 id="进程间通信的交互模式">进程间通信的交互模式</h2>
+<p>当谈到进程间通信时，也许大多数人的第一反应就是 <strong>RPC（Remote Procedure Call）</strong> ，
+因为确实 RPC 是最符合我们直观感受的进程间通信。其工作过程为：</p>
+<ol>
+<li>Consumer 传递请求消息给到 Provider ；</li>
+<li>Provider 收到请求，执行相关逻辑；</li>
+<li>Provider 处理完毕，回复消息给到 Consumer；</li>
+</ol>
+<div class="mermaid" id="id-1"></div>
+<p>简单来讲，进程间通信就是：<strong>消息传递</strong>，而消息传递的过程中，必然存在两个角色：<strong>生产端</strong> 和 <strong>消费端</strong> 。</p>
+<p>如果我们不去关注消息底层究竟是如何进行传递的，那在整个过程中，我们只需要考虑如下三个维度：</p>
+<ul>
+<li>消费端是否需要回复消息？</li>
+<li>生产端是否需要等待回复消息？（<strong>同步 or 异步</strong>）</li>
+<li>消息是发送给一个，还是多个消费者端？（<strong>一对一 or 一对多</strong>）</li>
+</ul>
+<p>通过组合以上三个维度就可以得出以下几种进程间通信的交互模式。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center"><strong>一对一</strong></th>
+<th style="text-align:center"><strong>一对多</strong>｜</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><strong>同步模式</strong></td>
+<td style="text-align:center">同步请求/响应</td>
+<td style="text-align:center">同步请求/多响应</td>
+</tr>
+<tr>
+<td style="text-align:center"><strong>异步模式</strong></td>
+<td style="text-align:center">异步请求/响应（有回复） <br /> 单向通知（无回复）</td>
+<td style="text-align:center">发布/订阅（无回复）</td>
+</tr>
+</tbody>
+</table>
+<p>假设我们使用 RPC 来套用套用上述的三个维度：</p>
+<ul>
+<li>RPC 中消费端（对应 Provider）需要回复消息；</li>
+<li>RPC 中生产端（对应 Consumer）需要等待回复消息；</li>
+<li>RPC 中消息仅发送给一个消费者端；
+所以，RPC 本身属于 <strong>同步请求/响应模式</strong> 的范畴。</li>
+</ul>
+<p>那么消息队列属于什么模式呢？严格来说，消息队列只提供了消息传递的能力，并不从属于具体的交互模式。
+所以，可以由我们自己来定义生产端与消费端的行为，从而实现以上列举的所有交互模式。</p>
+<p>接下来，我们将基于消息队列来逐个介绍一下以上列举的五种交互方式。</p>
+<h2 id="五种消息交互模式">五种消息交互模式</h2>
+<h3 id="同步请求响应">同步请求/响应</h3>
+<figure><a class="lightgallery" href="https://i.bmp.ovh/imgs/2022/02/3590de50989105f5.png" title="https://i.bmp.ovh/imgs/2022/02/3590de50989105f5.png" data-thumbnail="https://i.bmp.ovh/imgs/2022/02/3590de50989105f5.png" data-sub-html="<h2>同步请求 &#43; 一对一消费</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="https://i.bmp.ovh/imgs/2022/02/3590de50989105f5.png"
+            data-srcset="https://i.bmp.ovh/imgs/2022/02/3590de50989105f5.png, https://i.bmp.ovh/imgs/2022/02/3590de50989105f5.png 1.5x, https://i.bmp.ovh/imgs/2022/02/3590de50989105f5.png 2x"
+            data-sizes="auto"
+            alt="https://i.bmp.ovh/imgs/2022/02/3590de50989105f5.png" />
+    </a><figcaption class="image-caption">同步请求 + 一对一消费</figcaption>
+    </figure>
+<p>这种便是典型的 RPC 工作模式。是的，通过消息队列我们同样可以实现 RPC 的工作方式，其中的关键点在于：</p>
+<ol>
+<li>生产端发送请求消息时，需要在消息中携带 <strong>回复队列 + 请求消息ID</strong> 的信息；</li>
+<li>消费端处理消息完毕后，将消息发往请求中指定的 <strong>回复队列</strong> ，并携带 <strong>请求消息ID</strong> 的信息；</li>
+<li>生产端监听指定的 <strong>回复队列</strong> ，并在收到回复消息后，通过 <strong>请求消息ID</strong> 将回复与请求进行关联；</li>
+</ol>
+<p>通过文字表述这个过程十分简单，但如果要将这套方案应用在生产环境中，则需要考虑很多细节。
+在本人之前的工作经历中，确实存在某些部门是通过消息队列来实现 <strong>同步请求/响应模式</strong> 的。</p>
+<p>相比于 RPC 方案，这种方式的好处在于：</p>
+<ul>
+<li><strong>统一组件</strong> : 不需要单独维护另一套 RPC 方案，通过消息队列能同时满足多种交互模式；</li>
+<li><strong>通信可用性高</strong> : 生产端和消费者端不一定需要同时都在线，可以允许短暂的节点失效；</li>
+</ul>
+<p>而该方案的缺点则在于：</p>
+<ul>
+<li><strong>热点组件</strong> : 消息队列承担了所有进程间通信的职责，需要组件本身具备高性能、高可用的特性；</li>
+<li><strong>消息延迟</strong> : 因为所有的请求消息、回复消息都需要经过 MQ 才能传递到对端，所以一次请求的端到端延迟自然比直连的 RPC 通信高得多，尤其需要考虑队列负载很高时的情况。</li>
+</ul>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw"></i>代理型消息队列 or 无代理消息队列<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>开源的 MQ 实现其实有很多，其中基于是否需要部署独立消息队列进程，可以分为如下两种类型。</p>
+<ul>
+<li><strong>代理型消息队列</strong> : 需要部署独立的消息队列组件，所有的消息需要由队列进程进行传递。典型代表有 Apache Kafka、RabbitMQ 等；</li>
+<li><strong>无代理消息队列</strong> : 不需要独立的消息队列组件，通过 Library 或者协议的方式工作，消息是在生产端和消费端之间直接传递。典型代表有 ZeroMQ 等；</li>
+</ul>
+<p>如今代理型消息队列组件是使用更加广泛的一种方式，
+所以本文中所有关于交互模式的介绍都是基于代理型消息队列，包括对其模式优缺点的讨论也都是建立在该基础之上。</p>
+<p>需要注意 <strong>代理型MQ</strong> 和 <strong>无代理MQ</strong> 的工作机制是不同的，比如消息延迟高的缺点，
+在无代理消息队列中并不是一个问题，因为它们是点对点直连的。</p>
+</div>
+        </div>
+    </div>
+<h3 id="异步请求响应">异步请求/响应</h3>
+<figure><a class="lightgallery" href="https://i.bmp.ovh/imgs/2022/02/333118465657d72e.png" title="https://i.bmp.ovh/imgs/2022/02/333118465657d72e.png" data-thumbnail="https://i.bmp.ovh/imgs/2022/02/333118465657d72e.png" data-sub-html="<h2>异步请求 &#43; 一对一消费</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="https://i.bmp.ovh/imgs/2022/02/333118465657d72e.png"
+            data-srcset="https://i.bmp.ovh/imgs/2022/02/333118465657d72e.png, https://i.bmp.ovh/imgs/2022/02/333118465657d72e.png 1.5x, https://i.bmp.ovh/imgs/2022/02/333118465657d72e.png 2x"
+            data-sizes="auto"
+            alt="https://i.bmp.ovh/imgs/2022/02/333118465657d72e.png" />
+    </a><figcaption class="image-caption">异步请求 + 一对一消费</figcaption>
+    </figure>
+<p>在 <strong>异步请求/响应</strong> 的模式下，工作流程如下：</p>
+<ol>
+<li>生产端发送请求消息到 MQ 之后，便会接着执行后续的逻辑，不会阻塞等待响应；</li>
+<li>消费端处理完请求消息后，将结果信息回复到指定的 <strong>回复队列</strong> 中；</li>
+<li>生产端监听 <strong>回复队列</strong> ，在另一条线程（不同于发送请求的线程）中执行结果处理逻辑；</li>
+</ol>
+<p>该模式比较适合：<strong>执行耗时，并存在结果状态需要传递的场景</strong>。</p>
+<p>举个例子，用户请求服务端进行视频转码，这类任务通常执行时间较长，不可能让客户端同步等待执行结果。
+所以我们通常的做法是：</p>
+<ol>
+<li>Server 接收到请求后，生成一个 <strong>taskID</strong> ，并将其与相关数据封装成请求消息传递给 transcode service；</li>
+<li>Server 将第一步生成的 <strong>taskID</strong> 返回给客户端；</li>
+<li>提供一个查询的 API 给客户端，通过 <strong>taskID</strong> 能够查询任务的执行状态；</li>
+<li>当 transcode service 处理完成后，回复相关的结果响应数据给回 Server ；</li>
+<li>Server 收到结果响应数据后，更新 <strong>taskID</strong>对应记录的状态以及记录结果相关数据；</li>
+</ol>
+<div class="details admonition warning open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-exclamation-triangle fa-fw"></i>一切都将工作良好么？<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>在 <strong>异步请求/响应模式</strong> 中，如果一切工作良好，则 Server 会正常收到所有任务的处理结果响应。
+但如果 transcode service 没有正常返回执行结果信息呢（如宕机、超时、网络中断等情况）？
+客户端查询到的任务状态可能会一直卡在 &lsquo;processing&rsquo; 状态，这是不符合预期的。</p>
+<p>所以当使用该模式时，我们一定要考虑 <strong>兜底策略</strong> ，比如给任务状态设置一个超时，设置定时任务去定期检查状态等手段。
+<strong>总之，无论使用什么模式，我们都需要考虑流程异常的情况。</strong></p>
+</div>
+        </div>
+    </div>
+<h3 id="单向通知">单向通知</h3>
+<figure><a class="lightgallery" href="https://i.bmp.ovh/imgs/2022/02/8394c2ed4d818851.png" title="https://i.bmp.ovh/imgs/2022/02/8394c2ed4d818851.png" data-thumbnail="https://i.bmp.ovh/imgs/2022/02/8394c2ed4d818851.png" data-sub-html="<h2>异步请求 &#43; 一对一消费 &#43; 无回复</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="https://i.bmp.ovh/imgs/2022/02/8394c2ed4d818851.png"
+            data-srcset="https://i.bmp.ovh/imgs/2022/02/8394c2ed4d818851.png, https://i.bmp.ovh/imgs/2022/02/8394c2ed4d818851.png 1.5x, https://i.bmp.ovh/imgs/2022/02/8394c2ed4d818851.png 2x"
+            data-sizes="auto"
+            alt="https://i.bmp.ovh/imgs/2022/02/8394c2ed4d818851.png" />
+    </a><figcaption class="image-caption">异步请求 + 一对一消费 + 无回复</figcaption>
+    </figure>
+<p>典型的异步消息场景，生产端将消息发送给消费者之后，便执行后续的逻辑，完全不关心执行情况。
+该模式比较适用于 <strong>简单的，对失败容忍程度较高的业务场景</strong>。</p>
+<p>比如邮件通知服务，在部分流程中（如用户注册后的欢迎邮件等），邮件漏发并不会导致非常严重的问题，
+所以请求发送邮件的 Server 并不需要关心邮件发送的执行结果，只需要把消息正常地投递出去即可。</p>
+<h3 id="发布订阅">发布/订阅</h3>
+<figure><a class="lightgallery" href="https://i.bmp.ovh/imgs/2022/02/25237412749d186f.png" title="https://i.bmp.ovh/imgs/2022/02/25237412749d186f.png" data-thumbnail="https://i.bmp.ovh/imgs/2022/02/25237412749d186f.png" data-sub-html="<h2>异步请求 &#43; 一对多消费 &#43; 无回复</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="https://i.bmp.ovh/imgs/2022/02/25237412749d186f.png"
+            data-srcset="https://i.bmp.ovh/imgs/2022/02/25237412749d186f.png, https://i.bmp.ovh/imgs/2022/02/25237412749d186f.png 1.5x, https://i.bmp.ovh/imgs/2022/02/25237412749d186f.png 2x"
+            data-sizes="auto"
+            alt="https://i.bmp.ovh/imgs/2022/02/25237412749d186f.png" />
+    </a><figcaption class="image-caption">异步请求 + 一对多消费 + 无回复</figcaption>
+    </figure>
+<p>与 <strong>单向通知模式</strong> 十分相似，区别在于该模式是 <strong>一对多消费</strong> 。
+但其实这并不是这两种模式本质上的区别，同样是一个生产端，同样是发送消息到队列，
+为什么 <strong>单向通知模式</strong> 只能有一个消费者，而发布/订阅模式可以存在多个消费者呢？</p>
+<p>究其原因是在于 <strong>消息类型不同</strong>，单向通知模式使用的是命令消息，发布/订阅模式使用的是事件消息。
+而关于命令消息和事件消息的区别，我们会在后面的小节再来介绍。</p>
+<p><strong>发布/订阅模式</strong> 适用于领域事件通知的场景，比如新用户注册、用户下单等事件，
+当业务中存在某些服务需要依赖这些事件时，便可以考虑使用发布/订阅模式。</p>
+<h3 id="同步请求多响应">同步请求/多响应</h3>
+<figure><a class="lightgallery" href="https://i.bmp.ovh/imgs/2022/02/19421bf07726ee54.png" title="https://i.bmp.ovh/imgs/2022/02/19421bf07726ee54.png" data-thumbnail="https://i.bmp.ovh/imgs/2022/02/19421bf07726ee54.png" data-sub-html="<h2>同步请求 &#43; 一对多消费 &#43; 多回复</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="https://i.bmp.ovh/imgs/2022/02/19421bf07726ee54.png"
+            data-srcset="https://i.bmp.ovh/imgs/2022/02/19421bf07726ee54.png, https://i.bmp.ovh/imgs/2022/02/19421bf07726ee54.png 1.5x, https://i.bmp.ovh/imgs/2022/02/19421bf07726ee54.png 2x"
+            data-sizes="auto"
+            alt="https://i.bmp.ovh/imgs/2022/02/19421bf07726ee54.png" />
+    </a><figcaption class="image-caption">同步请求 + 一对多消费 + 多回复</figcaption>
+    </figure>
+<p>该模式相对比较特殊，它属于是 <strong>同步请求/响应模式</strong> 的一种拓展，即我们可以从多个消费端来收集数据。</p>
+<p>日常我们使用 RPC 时，我们只需要从服务提供者列表中的某一个节点上获取数据即可，
+这种情况是建立在 <strong>所有的节点共享一个数据视图的情况下</strong> 。
+如果每个服务节点存在不同的数据视图，则普通的 RPC 模式将显得力不从心。</p>
+<p>举个例子，分布式缓存（Redis）和本地缓存的区别：</p>
+<ul>
+<li><strong>分布式缓存</strong> : 无论请求哪一个服务节点，获取的数据都是一致的；</li>
+<li><strong>本地缓存</strong> : 缓存数据放置在不同节点上，同一个 key 在不同节点上，其值可能并不相同；</li>
+</ul>
+<p>假设我们现在需要检查每个节点的本地缓存视图是否一致，使用单纯的 RPC 便无法完成目标了。
+此时我们便可以考虑 <strong>同步请求/多响应模式</strong>，通过使用消息队列支持一对多消费的能力，来实现此类场景的功能。</p>
+<h2 id="命令消息-or-事件消息">命令消息 or 事件消息</h2>
+<p>在发布/订阅模式小节，我们指出了其与单向通知模式的区别在于：<strong>消息类型的不同</strong>。</p>
+<p>并指出了两种消息类型：<strong>命令消息</strong> 与 <strong>事件消息</strong>，以下是关于两者的描述。</p>
+<ul>
+<li><strong>命令消息（Command）</strong>: 一条等同于 RPC 请求的消息，需要指定要调用的操作及其参数；</li>
+<li><strong>事件消息（Event）</strong>: 表示发送方这一端发生了重要的事件（通常是领域事件），表示领域对象的状态更改；</li>
+</ul>
+<p>以上的定义可能还是有些晦涩，其实简单来说，两种类型的区别在于 <strong>消息体的语义</strong>。</p>
+<p>举个例子：新用户创建时，Server 需要对其发送通知邮件。
+创建过程发生在用户服务，所以用户服务需要发送一条消息通知邮件服务发送欢迎邮件。</p>
+<p>此时我们就面临一个设计决策，<strong>使用 Command 还是 Event ？</strong> 两者产生的效果是完全不同的。</p>
+<p>如果我们使用 <strong>Command</strong>，那么消息体就会长这个样子。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
+  <span class="nt">&#34;email&#34;</span><span class="p">:</span> <span class="s2">&#34;vison@gmail.com&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;content&#34;</span><span class="p">:</span> <span class="s2">&#34;Hi vison, welcome to here...&#34;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在用户服务中，我们需要按照邮件服务定义的请求格式来组装消息。
+由于消息组装的逻辑放在了请求测中，<strong>邮件服务则不需要考虑上游的业务逻辑，作为底层基础服务它将更通用</strong>。</p>
+<br />
+<p>如果我们使用 <strong>Event</strong>，那么消息体就变成如下内容。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;user_id&#34;</span><span class="p">:</span> <span class="mi">101</span><span class="p">,</span>
+  <span class="nt">&#34;user_email&#34;</span><span class="p">:</span> <span class="s2">&#34;vison@gmail.com&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;user_name&#34;</span><span class="p">:</span> <span class="s2">&#34;vison&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;create_time&#34;</span><span class="p">:</span> <span class="mi">16023903432</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在用户服务中，它只关心将领域对象（此处对应用户对象）的 <strong>源数据信息</strong> 广播出去，它并不关心其他服务如何处理这些信息，
+因此 <strong>该消息没有与任何其他业务耦合，消息体更加通用</strong>，可以被多个消费者端使用，
+这便是为什么 <strong>发布/订阅模式</strong> 需要使用 Event 类型的消息。</p>
+<p>但在这个场景中，作为邮件服务，它便要处理适配的逻辑，需要处理这些源数据信息，将其适配成对应的邮件内容来进行邮件发送。
+从某种程度来说，<strong>其破坏了邮件服务作为底层基础服务的通用性</strong>。</p>
+<div class="details admonition question open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-question-circle fa-fw"></i>为什么消息类型很重要？<i class="details-icon fas fa-angle-right fa-fw"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">如上所述，<strong>消息类型决定了消息可用的交互模式，甚至决定了业务职责划分的问题</strong>。
+所以当我们在系统中设计消息相关的交互场景时，需要更加细致地考虑 <strong>消息类型</strong> 的选择问题。</div>
+        </div>
+    </div>
+<h2 id="小结">小结</h2>
+<p>在这篇文章中，我们介绍了 <strong>进程间通信的交互模式</strong>，
+并基于消息队列来讲述每种交互模式是如何工作的，以及其适用的场景，
+最后简单介绍了 <strong>Command</strong> 和 <strong>Event</strong> 消息的区别。</p>
+<p>异步消息是我们日常开发中常用的手段，虽然我们熟悉它的使用，但也不免容易忽略使用手段背后应有的考量。
+在开发实践中，我们应该多去关注那些我们认为理所应当的事情，多问自己几个问题，多看看别人是如何思考这些问题的，
+也许能从中发现更加广阔的天地，<strong>即要着眼于细节，也要时不时抬起身俯瞰全貌</strong>。</p>
+<h2 id="reference">Reference</h2>
+<ul>
+<li><a href="https://microservices.io/index.html" target="_blank" rel="noopener noreffer">《Microservices Pattern》(Chris Richardson)</a></li>
+</ul></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2022-02-20</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a>,&nbsp;<a href="/tags/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">进程间通信</a>,&nbsp;<a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/program_design/why_we_need_goto_keyword/" class="prev" rel="prev" title="关于 goto 语句那些事"><i class="fas fa-angle-left fa-fw"></i>关于 goto 语句那些事</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.92.2">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"><i class="far fa-kiss-wink-heart fa-fw"></i> LoveIt</a>
+                </div><div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/mermaid/mermaid.min.css"><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/mermaid/mermaid.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":20},"comment":{},"data":{"id-1":"graph LR;\nA[Consumer] --\u003e |request| B[Provider]\nB --\u003e |reply| A"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>
