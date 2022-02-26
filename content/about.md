@@ -2,7 +2,6 @@
 title: "HE WEISHENG"
 date: 2022-02-16T17:12:30+08:00
 draft: false
-featuredImage: "images/feature/about_me_bg.jpeg"
 ---
 {{< image src="/images/feature/lighthouse-large.jpeg" caption="Lighthouse (`image`)" >}}
 
@@ -22,12 +21,12 @@ Hi，你好呀～ :smile: :smile:
 - 分布式系统、系统架构相关知识；
 - DevOps相关理论知识；
 - 敏捷、软件流程优化相关理论知识；
-- 系统的计算机科学基础知识；
+- 系统的 CS 基础知识；
 
 **关于兴趣爱好**
-- 平时喜欢打篮球 :basketball:，台球技能良(you)好(xiu) :8ball:；
-- 看一些与技术无关的书籍（远离 **996** 的时候）；
-- 节假日喜欢搓搓麻将、打打牌 :mahjong:；
+- 平时喜欢打篮球 :basketball:，台球技能良(you)好(xiu) :8ball:
+- 阅读与技术无关的书籍（远离 **996** 的时候）
+- 假期喜欢搓搓麻将、打打牌 :mahjong:
 
 # 目标
 ## 2022
@@ -37,3 +36,4 @@ Hi，你好呀～ :smile: :smile:
 - [ ] 完成 50 篇技术博客；
 - [ ] 看完 10 本技术相关的书籍；
 - [ ] 完成 1 个小型个人开源项目；
+- [ ] 掌握一门新的编程语言；
