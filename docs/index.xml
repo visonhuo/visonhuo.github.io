@@ -3,9 +3,18 @@
         <title>Vison Space</title>
         <link>https://visonhuo.github.io/</link>
         <description>Vison 的全新 Hugo 网站</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 20 Feb 2022 15:50:53 &#43;0800</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 24 Feb 2022 21:52:33 &#43;0800</lastBuildDate>
             <atom:link href="https://visonhuo.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
+    <title>关于职业生涯的知识投资</title>
+    <link>https://visonhuo.github.io/posts/summary/how_to_keep_learning/</link>
+    <pubDate>Thu, 24 Feb 2022 21:52:33 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://visonhuo.github.io/posts/summary/how_to_keep_learning/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/feature/summary/how_to_keep_learning_bg.png" referrerpolicy="no-referrer">
+            </div>毕业四年后，当再次捧起《程序员修炼之道》，感触颇多。对工程师而言，持续学习的能力是所有能力中最重要的，遂有本文记录书中的所思所想。]]></description>
+</item><item>
     <title>微服务架构中的消息通信模式</title>
     <link>https://visonhuo.github.io/posts/architecture_design/message_pattern/</link>
     <pubDate>Sun, 20 Feb 2022 15:50:53 &#43;0800</pubDate>
