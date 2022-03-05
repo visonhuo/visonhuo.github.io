@@ -3,7 +3,16 @@
         <title>架构设计 - 分类 - Vison Space</title>
         <link>https://visonhuo.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</link>
         <description>架构设计 - 分类 - Vison Space</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sun, 20 Feb 2022 15:50:53 &#43;0800</lastBuildDate><atom:link href="https://visonhuo.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 03 Mar 2022 16:48:49 &#43;0800</lastBuildDate><atom:link href="https://visonhuo.github.io/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" rel="self" type="application/rss+xml" /><item>
+    <title>缓存更新模式</title>
+    <link>https://visonhuo.github.io/posts/architecture_design/cache_update_patterns/</link>
+    <pubDate>Thu, 03 Mar 2022 16:48:49 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://visonhuo.github.io/posts/architecture_design/cache_update_patterns/</guid>
+    <description><![CDATA[<div class="featured-image">
+                <img src="/images/feature/architecture_design/cache_update_patterns.png" referrerpolicy="no-referrer">
+            </div>缓存是常用的性能优化手段，其本质是创建真实数据的高效可读副本，为了保证副本与真实数据的一致性，当真实数据更新时，我们同样需要对缓存进行更新，本文中将介绍缓存更新的一些常见模式。]]></description>
+</item><item>
     <title>微服务架构中的消息通信模式</title>
     <link>https://visonhuo.github.io/posts/architecture_design/message_pattern/</link>
     <pubDate>Sun, 20 Feb 2022 15:50:53 &#43;0800</pubDate>
