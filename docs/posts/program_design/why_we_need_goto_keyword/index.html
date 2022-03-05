@@ -120,9 +120,15 @@
 <p>然而，事实真的是如此么？如果 goto 本身糟糕透顶，那为什么至今主流的语言仍然选择保留这个关键字呢？
 我们将通过本篇文章对 goto 关键字一探究竟，将讨论如下几个主题：</p>
 <ul>
-<li><i class="far fa-check-square fa-fw"></i> 关于 goto 的争论</li>
-<li><i class="far fa-check-square fa-fw"></i> goto 的使用方法</li>
-<li><i class="far fa-check-square fa-fw"></i> goto 适用于哪些场景？</li>
+<li>
+<p><i class="far fa-check-square fa-fw"></i> 关于 goto 的争论</p>
+</li>
+<li>
+<p><i class="far fa-check-square fa-fw"></i> goto 的使用方法</p>
+</li>
+<li>
+<p><i class="far fa-check-square fa-fw"></i> goto 适用于哪些场景？</p>
+</li>
 </ul>
 <h2 id="关于-goto-的争论">关于 goto 的争论</h2>
 <p>首先我们引用一段在 Wiki 百科中关于 goto 的介绍：</p>
@@ -136,8 +142,12 @@
 从这一点上看，它与 if、while、for 这些流程控制指令并无不同，但最大的问题是出在 <strong>无条件</strong> 这个前提下。</p>
 <p>在写这篇文章前，我曾想通过查找一些资料来探寻 goto 指令的起源，即：</p>
 <ol>
-<li>goto 指令是什么时候诞生的？</li>
-<li>该指令诞生的初衷是什么？</li>
+<li>
+<p>goto 指令是什么时候诞生的？</p>
+</li>
+<li>
+<p>该指令诞生的初衷是什么？</p>
+</li>
 </ol>
 <p>可惜在网上并没有找到关于这些疑问的详细资料，但通过 goto 的争论史，我们却能够从中推敲出一些线索。</p>
 <h3 id="争论起源">争论起源</h3>
@@ -164,8 +174,12 @@
 <h3 id="再谈起源">再谈起源</h3>
 <p>虽然没有明确的资料来证实 goto 指令的起源，但是通过以上信息，我们也可以从侧面推敲出一些线索：</p>
 <ul>
-<li>在 1968 年之前，goto 语句就已经应用于日常的程序设计中；（否则不可能存在争论）</li>
-<li>在结构化程序设计被证明之前，goto 指令就已经存在了；</li>
+<li>
+<p>在 1968 年之前，goto 语句就已经应用于日常的程序设计中；（否则不可能存在争论）</p>
+</li>
+<li>
+<p>在结构化程序设计被证明之前，goto 指令就已经存在了；</p>
+</li>
 </ul>
 <p>以上信息说明，goto 是比条件、循环等指令出现时间更早的程序流控制指令。
 goto 设计之初的初衷是为了完成 &ldquo;指令跳转&rdquo; 的任务。但因为其过于灵活的特性，
@@ -173,8 +187,12 @@ goto 设计之初的初衷是为了完成 &ldquo;指令跳转&rdquo; 的任务�
 <h2 id="goto-的使用方法">goto 的使用方法</h2>
 <p>无论在哪种语言中使用 goto 语句，基本都符合以下使用方式：</p>
 <ol>
-<li>在目标代码片段前添加 Label 信息；</li>
-<li>在需要跳转逻辑的地方，使用 goto Label 进行跳转；</li>
+<li>
+<p>在目标代码片段前添加 Label 信息；</p>
+</li>
+<li>
+<p>在需要跳转逻辑的地方，使用 goto Label 进行跳转；</p>
+</li>
 </ol>
 <p>以下是一段使用 Golang 编写的示例代码，通过使用 goto 语句将错误处理放置到程序的末尾处。</p>
 <div class="highlight"><div class="chroma">
@@ -218,8 +236,12 @@ goto 设计之初的初衷是为了完成 &ldquo;指令跳转&rdquo; 的任务�
 </div><h2 id="goto-适用于哪些场景">goto 适用于哪些场景？</h2>
 <p>虽然现如今仍存在部分高级语言保留了 goto 关键字，但几乎都对其跳转行为进行了不同程度的限制。比如：</p>
 <ul>
-<li>在 Golang 中，goto 跳转被限制在只能在同一个函数体内进行跳转 (<a href="https://go.dev/ref/spec#Goto_statements" target="_blank" rel="noopener noreffer">Goto statements</a>；</li>
-<li>在 Java 中，只是保留了 goto 关键字，而禁用了 goto 的功能；</li>
+<li>
+<p>在 Golang 中，goto 跳转被限制在只能在同一个函数体内进行跳转 <a href="https://go.dev/ref/spec#Goto_statements" target="_blank" rel="noopener noreffer">Goto statements</a>；</p>
+</li>
+<li>
+<p>在 Java 中，只是保留了 goto 关键字，而禁用了 goto 的功能；</p>
+</li>
 </ul>
 <p>功能受限的 goto 语句会失去一定的灵活性，但同时也给予程序更多的 <strong>安全性和可控性</strong>。</p>
 <p>那么，我们应该在什么场景下才考虑使用 goto 语句呢？以下将会列举一些场景供参考。</p>

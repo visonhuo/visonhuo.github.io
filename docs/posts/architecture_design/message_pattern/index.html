@@ -116,25 +116,43 @@
 并基于消息队列来讲述几种交互模式的工作过程及其应用场景。
 将会讨论如下内容：</p>
 <ul>
-<li><i class="far fa-check-square fa-fw"></i> 进程间通信的交互模式</li>
-<li><i class="far fa-check-square fa-fw"></i> 五种消息交互模式</li>
-<li><i class="far fa-check-square fa-fw"></i> 命令消息 or 事件消息</li>
+<li>
+<p><i class="far fa-check-square fa-fw"></i> 进程间通信的交互模式</p>
+</li>
+<li>
+<p><i class="far fa-check-square fa-fw"></i> 五种消息交互模式</p>
+</li>
+<li>
+<p><i class="far fa-check-square fa-fw"></i> 命令消息 or 事件消息</p>
+</li>
 </ul>
 <h2 id="进程间通信的交互模式">进程间通信的交互模式</h2>
 <p>当谈到进程间通信时，也许大多数人的第一反应就是 <strong>RPC（Remote Procedure Call）</strong> ，
 因为确实 RPC 是最符合我们直观感受的进程间通信。其工作过程为：</p>
 <ol>
-<li>Consumer 传递请求消息给到 Provider ；</li>
-<li>Provider 收到请求，执行相关逻辑；</li>
-<li>Provider 处理完毕，回复消息给到 Consumer；</li>
+<li>
+<p>Consumer 传递请求消息给到 Provider ；</p>
+</li>
+<li>
+<p>Provider 收到请求，执行相关逻辑；</p>
+</li>
+<li>
+<p>Provider 处理完毕，回复消息给到 Consumer；</p>
+</li>
 </ol>
 <div class="mermaid" id="id-1"></div>
 <p>简单来讲，进程间通信就是：<strong>消息传递</strong>，而消息传递的过程中，必然存在两个角色：<strong>生产端</strong> 和 <strong>消费端</strong> 。</p>
 <p>如果我们不去关注消息底层究竟是如何进行传递的，那在整个过程中，我们只需要考虑如下三个维度：</p>
 <ul>
-<li>消费端是否需要回复消息？</li>
-<li>生产端是否需要等待回复消息？（<strong>同步 or 异步</strong>）</li>
-<li>消息是发送给一个，还是多个消费者端？（<strong>一对一 or 一对多</strong>）</li>
+<li>
+<p>消费端是否需要回复消息？</p>
+</li>
+<li>
+<p>生产端是否需要等待回复消息？（<strong>同步 or 异步</strong>）</p>
+</li>
+<li>
+<p>消息是发送给一个，还是多个消费者端？（<strong>一对一 or 一对多</strong>）</p>
+</li>
 </ul>
 <p>通过组合以上三个维度就可以得出以下几种进程间通信的交互模式。</p>
 <table>
@@ -160,10 +178,16 @@
 </table>
 <p>假设我们使用 RPC 来套用套用上述的三个维度：</p>
 <ul>
-<li>RPC 中消费端（对应 Provider）需要回复消息；</li>
-<li>RPC 中生产端（对应 Consumer）需要等待回复消息；</li>
-<li>RPC 中消息仅发送给一个消费者端；
-所以，RPC 本身属于 <strong>同步请求/响应模式</strong> 的范畴。</li>
+<li>
+<p>RPC 中消费端（对应 Provider）需要回复消息；</p>
+</li>
+<li>
+<p>RPC 中生产端（对应 Consumer）需要等待回复消息；</p>
+</li>
+<li>
+<p>RPC 中消息仅发送给一个消费者端；
+所以，RPC 本身属于 <strong>同步请求/响应模式</strong> 的范畴。</p>
+</li>
 </ul>
 <p>那么消息队列属于什么模式呢？严格来说，消息队列只提供了消息传递的能力，并不从属于具体的交互模式。
 所以，可以由我们自己来定义生产端与消费端的行为，从而实现以上列举的所有交互模式。</p>
@@ -182,21 +206,35 @@
     </figure>
 <p>这种便是典型的 RPC 工作模式。是的，通过消息队列我们同样可以实现 RPC 的工作方式，其中的关键点在于：</p>
 <ol>
-<li>生产端发送请求消息时，需要在消息中携带 <strong>回复队列 + 请求消息ID</strong> 的信息；</li>
-<li>消费端处理消息完毕后，将消息发往请求中指定的 <strong>回复队列</strong> ，并携带 <strong>请求消息ID</strong> 的信息；</li>
-<li>生产端监听指定的 <strong>回复队列</strong> ，并在收到回复消息后，通过 <strong>请求消息ID</strong> 将回复与请求进行关联；</li>
+<li>
+<p>生产端发送请求消息时，需要在消息中携带 <strong>回复队列 + 请求消息ID</strong> 的信息；</p>
+</li>
+<li>
+<p>消费端处理消息完毕后，将消息发往请求中指定的 <strong>回复队列</strong> ，并携带 <strong>请求消息ID</strong> 的信息；</p>
+</li>
+<li>
+<p>生产端监听指定的 <strong>回复队列</strong> ，并在收到回复消息后，通过 <strong>请求消息ID</strong> 将回复与请求进行关联；</p>
+</li>
 </ol>
 <p>通过文字表述这个过程十分简单，但如果要将这套方案应用在生产环境中，则需要考虑很多细节。
 在本人之前的工作经历中，确实存在某些部门是通过消息队列来实现 <strong>同步请求/响应模式</strong> 的。</p>
 <p>相比于 RPC 方案，这种方式的好处在于：</p>
 <ul>
-<li><strong>统一组件</strong> : 不需要单独维护另一套 RPC 方案，通过消息队列能同时满足多种交互模式；</li>
-<li><strong>通信可用性高</strong> : 生产端和消费者端不一定需要同时都在线，可以允许短暂的节点失效；</li>
+<li>
+<p><strong>统一组件</strong> : 不需要单独维护另一套 RPC 方案，通过消息队列能同时满足多种交互模式；</p>
+</li>
+<li>
+<p><strong>通信可用性高</strong> : 生产端和消费者端不一定需要同时都在线，可以允许短暂的节点失效；</p>
+</li>
 </ul>
 <p>而该方案的缺点则在于：</p>
 <ul>
-<li><strong>热点组件</strong> : 消息队列承担了所有进程间通信的职责，需要组件本身具备高性能、高可用的特性；</li>
-<li><strong>消息延迟</strong> : 因为所有的请求消息、回复消息都需要经过 MQ 才能传递到对端，所以一次请求的端到端延迟自然比直连的 RPC 通信高得多，尤其需要考虑队列负载很高时的情况。</li>
+<li>
+<p><strong>热点组件</strong> : 消息队列承担了所有进程间通信的职责，需要组件本身具备高性能、高可用的特性；</p>
+</li>
+<li>
+<p><strong>消息延迟</strong> : 因为所有的请求消息、回复消息都需要经过 MQ 才能传递到对端，所以一次请求的端到端延迟自然比直连的 RPC 通信高得多，尤其需要考虑队列负载很高时的情况。</p>
+</li>
 </ul>
 <div class="details admonition tip open">
         <div class="details-summary admonition-title">
@@ -205,8 +243,12 @@
         <div class="details-content">
             <div class="admonition-content"><p>开源的 MQ 实现其实有很多，其中基于是否需要部署独立消息队列进程，可以分为如下两种类型。</p>
 <ul>
-<li><strong>代理型消息队列</strong> : 需要部署独立的消息队列组件，所有的消息需要由队列进程进行传递。典型代表有 Apache Kafka、RabbitMQ 等；</li>
-<li><strong>无代理消息队列</strong> : 不需要独立的消息队列组件，通过 Library 或者协议的方式工作，消息是在生产端和消费端之间直接传递。典型代表有 ZeroMQ 等；</li>
+<li>
+<p><strong>代理型消息队列</strong> : 需要部署独立的消息队列组件，所有的消息需要由队列进程进行传递。典型代表有 Apache Kafka、RabbitMQ 等；</p>
+</li>
+<li>
+<p><strong>无代理消息队列</strong> : 不需要独立的消息队列组件，通过 Library 或者协议的方式工作，消息是在生产端和消费端之间直接传递。典型代表有 ZeroMQ 等；</p>
+</li>
 </ul>
 <p>如今代理型消息队列组件是使用更加广泛的一种方式，
 所以本文中所有关于交互模式的介绍都是基于代理型消息队列，包括对其模式优缺点的讨论也都是建立在该基础之上。</p>
@@ -228,19 +270,35 @@
     </figure>
 <p>在 <strong>异步请求/响应</strong> 的模式下，工作流程如下：</p>
 <ol>
-<li>生产端发送请求消息到 MQ 之后，便会接着执行后续的逻辑，不会阻塞等待响应；</li>
-<li>消费端处理完请求消息后，将结果信息回复到指定的 <strong>回复队列</strong> 中；</li>
-<li>生产端监听 <strong>回复队列</strong> ，在另一条线程（不同于发送请求的线程）中执行结果处理逻辑；</li>
+<li>
+<p>生产端发送请求消息到 MQ 之后，便会接着执行后续的逻辑，不会阻塞等待响应；</p>
+</li>
+<li>
+<p>消费端处理完请求消息后，将结果信息回复到指定的 <strong>回复队列</strong> 中；</p>
+</li>
+<li>
+<p>生产端监听 <strong>回复队列</strong> ，在另一条线程（不同于发送请求的线程）中执行结果处理逻辑；</p>
+</li>
 </ol>
 <p>该模式比较适合：<strong>执行耗时，并存在结果状态需要传递的场景</strong>。</p>
 <p>举个例子，用户请求服务端进行视频转码，这类任务通常执行时间较长，不可能让客户端同步等待执行结果。
 所以我们通常的做法是：</p>
 <ol>
-<li>Server 接收到请求后，生成一个 <strong>taskID</strong> ，并将其与相关数据封装成请求消息传递给 transcode service；</li>
-<li>Server 将第一步生成的 <strong>taskID</strong> 返回给客户端；</li>
-<li>提供一个查询的 API 给客户端，通过 <strong>taskID</strong> 能够查询任务的执行状态；</li>
-<li>当 transcode service 处理完成后，回复相关的结果响应数据给回 Server ；</li>
-<li>Server 收到结果响应数据后，更新 <strong>taskID</strong>对应记录的状态以及记录结果相关数据；</li>
+<li>
+<p>Server 接收到请求后，生成一个 <strong>taskID</strong> ，并将其与相关数据封装成请求消息传递给 transcode service；</p>
+</li>
+<li>
+<p>Server 将第一步生成的 <strong>taskID</strong> 返回给客户端；</p>
+</li>
+<li>
+<p>提供一个查询的 API 给客户端，通过 <strong>taskID</strong> 能够查询任务的执行状态；</p>
+</li>
+<li>
+<p>当 transcode service 处理完成后，回复相关的结果响应数据给回 Server ；</p>
+</li>
+<li>
+<p>Server 收到结果响应数据后，更新 <strong>taskID</strong>对应记录的状态以及记录结果相关数据；</p>
+</li>
 </ol>
 <div class="details admonition warning open">
         <div class="details-summary admonition-title">
@@ -305,8 +363,12 @@
 如果每个服务节点存在不同的数据视图，则普通的 RPC 模式将显得力不从心。</p>
 <p>举个例子，分布式缓存（Redis）和本地缓存的区别：</p>
 <ul>
-<li><strong>分布式缓存</strong> : 无论请求哪一个服务节点，获取的数据都是一致的；</li>
-<li><strong>本地缓存</strong> : 缓存数据放置在不同节点上，同一个 key 在不同节点上，其值可能并不相同；</li>
+<li>
+<p><strong>分布式缓存</strong> : 无论请求哪一个服务节点，获取的数据都是一致的；</p>
+</li>
+<li>
+<p><strong>本地缓存</strong> : 缓存数据放置在不同节点上，同一个 key 在不同节点上，其值可能并不相同；</p>
+</li>
 </ul>
 <p>假设我们现在需要检查每个节点的本地缓存视图是否一致，使用单纯的 RPC 便无法完成目标了。
 此时我们便可以考虑 <strong>同步请求/多响应模式</strong>，通过使用消息队列支持一对多消费的能力，来实现此类场景的功能。</p>
@@ -314,8 +376,12 @@
 <p>在发布/订阅模式小节，我们指出了其与单向通知模式的区别在于：<strong>消息类型的不同</strong>。</p>
 <p>并指出了两种消息类型：<strong>命令消息</strong> 与 <strong>事件消息</strong>，以下是关于两者的描述。</p>
 <ul>
-<li><strong>命令消息（Command）</strong>: 一条等同于 RPC 请求的消息，需要指定要调用的操作及其参数；</li>
-<li><strong>事件消息（Event）</strong>: 表示发送方这一端发生了重要的事件（通常是领域事件），表示领域对象的状态更改；</li>
+<li>
+<p><strong>命令消息（Command）</strong>: 一条等同于 RPC 请求的消息，需要指定要调用的操作及其参数；</p>
+</li>
+<li>
+<p><strong>事件消息（Event）</strong>: 表示发送方这一端发生了重要的事件（通常是领域事件），表示领域对象的状态更改；</p>
+</li>
 </ul>
 <p>以上的定义可能还是有些晦涩，其实简单来说，两种类型的区别在于 <strong>消息体的语义</strong>。</p>
 <p>举个例子：新用户创建时，Server 需要对其发送通知邮件。
